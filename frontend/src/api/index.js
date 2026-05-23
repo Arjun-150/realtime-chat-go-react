@@ -1,28 +1,26 @@
-// api/index.js
 var socket = new WebSocket("ws://localhost:8080/ws");
 
-let connect = () => {
-  console.log("Attempting Connection...");
+let connect = (cb) => {
+  console.log("connecting");
 
   socket.onopen = () => {
-    console.log("Successfully Connected");
+    console.log("connected");
   };
 
-  socket.onmessage = msg => {
-    console.log(msg);
+  socket.onmessage = (msg) => {
+    cb(msg);
   };
 
-  socket.onclose = event => {
-    console.log("Socket Closed Connection: ", event);
+  socket.onclose = () => {
+    console.log("closed");
   };
 
-  socket.onerror = error => {
-    console.log("Socket Error: ", error);
+  socket.onerror = (err) => {
+    console.log("error", err);
   };
 };
 
-let sendMsg = msg => {
-  console.log("sending msg: ", msg);
+let sendMsg = (msg) => {
   socket.send(msg);
 };
 
