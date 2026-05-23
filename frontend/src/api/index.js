@@ -1,7 +1,9 @@
-var socket = new WebSocket("ws://localhost:8080/ws");
+let socket = null;
 
-let connect = (cb) => {
+export const connect = (cb) => {
   console.log("connecting");
+
+  socket = new WebSocket("ws://localhost:8080/ws");
 
   socket.onopen = () => {
     console.log("connected");
@@ -20,8 +22,10 @@ let connect = (cb) => {
   };
 };
 
-let sendMsg = (msg) => {
+export const sendMsg = (msg) => {
+  if (!socket || socket.readyState !== WebSocket.OPEN) {
+    console.log("socket not ready");
+    return;
+  }
   socket.send(msg);
 };
-
-export { connect, sendMsg };
