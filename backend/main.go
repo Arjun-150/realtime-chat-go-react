@@ -14,15 +14,20 @@ func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	username := r.URL.Query().Get("username")
+	if username == "" {
+		username = "Guest"
+	}
+
 	client := &websocket.Client{
-		Conn: conn,
-		Pool: pool,
+		Conn:     conn,
+		Pool:     pool,
+		Username: username,
 	}
 
 	pool.Register <- client
 	client.Read()
 }
-
 func main() {
 	fmt.Println("Server started")
 

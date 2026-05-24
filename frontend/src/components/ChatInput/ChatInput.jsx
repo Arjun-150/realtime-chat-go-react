@@ -14,5 +14,4 @@ function ChatInput({ send }) {
     </div>
   );
 }
-
 export default ChatInput;

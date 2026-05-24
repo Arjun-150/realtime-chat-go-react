@@ -8,13 +8,16 @@ import (
 )
 
 type Client struct {
-	Conn *websocket.Conn
-	Pool *Pool
+	Username string
+	Conn     *websocket.Conn
+	Pool     *Pool
 }
 
 type Message struct {
-	Type int    `json:"type"`
-	Body string `json:"body"`
+	Type     string `json:"type"`
+	Body     string `json:"body"`
+	Username string `json:"username,omitempty"`
+	Time     string `json:"time,omitempty"`
 }
 
 func (c *Client) Read() {
@@ -24,15 +27,16 @@ func (c *Client) Read() {
 	}()
 
 	for {
-		messageType, p, err := c.Conn.ReadMessage()
+		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			log.Println(err)
 			return
 		}
 
 		msg := Message{
-			Type: messageType,
-			Body: string(p),
+			Type:     "chat",
+			Body:     string(p),
+			Username: c.Username,
 		}
 
 		c.Pool.Broadcast <- msg

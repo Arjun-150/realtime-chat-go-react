@@ -24,41 +24,39 @@ func (pool *Pool) Start() {
 
 		case client := <-pool.Register:
 			pool.Clients[client] = true
-
 			fmt.Println("Clients Added:", len(pool.Clients))
 
-			// notify everyone
-			for c := range pool.Clients {
-				err := c.Conn.WriteJSON(Message{
-					Type: 1,
-					Body: "New User Joined...",
-				})
-				if err != nil {
-					fmt.Println("write error:", err)
-				}
-			}
+			pool.broadcast(Message{
+				Type:     "system",
+				Username: client.Username,
+				Body:     "joined",
+			})
 
 		case client := <-pool.Unregister:
-			delete(pool.Clients, client)
+			if _, ok := pool.Clients[client]; ok {
+				delete(pool.Clients, client)
+				fmt.Println("Clients Removed:", len(pool.Clients))
 
-			fmt.Println("Clients Removed:", len(pool.Clients))
-
-			for c := range pool.Clients {
-				c.Conn.WriteJSON(Message{
-					Type: 1,
-					Body: "User Left...",
+				pool.broadcast(Message{
+					Type:     "system",
+					Username: client.Username,
+					Body:     "left",
 				})
 			}
 
 		case message := <-pool.Broadcast:
 			fmt.Println("Received:", message.Body)
+			pool.broadcast(message)
+		}
+	}
+}
 
-			for c := range pool.Clients {
-				err := c.Conn.WriteJSON(message)
-				if err != nil {
-					fmt.Println("broadcast error:", err)
-				}
-			}
+// helper function
+func (pool *Pool) broadcast(msg Message) {
+	for c := range pool.Clients {
+		err := c.Conn.WriteJSON(msg)
+		if err != nil {
+			fmt.Println("broadcast error:", err)
 		}
 	}
 }

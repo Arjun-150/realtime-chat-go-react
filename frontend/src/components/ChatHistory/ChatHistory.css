@@ -1,8 +1,53 @@
 .ChatHistory {
-  background-color: #f7f7f7;
-  padding: 20px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-.ChatHistory h2 {
-  margin: 0;
+.messageBubble {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  margin: 8px 0;
+  width: fit-content;
+  max-width: 60%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.messageText {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+}
+
+.username {
+  font-weight: bold;
+  color: #2a7fff;
+}
+
+.body {
+  font-size: 15px;
+  color: #222;
+}
+
+.time {
+  font-size: 10px;
+  color: gray;
+  position: absolute;
+  bottom: 4px;
+  right: 8px;
+}
+
+.systemText {
+  text-align: center;
+  color: gray;
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.messageTop {
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }

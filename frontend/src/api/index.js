@@ -1,9 +1,9 @@
 let socket = null;
 
-export const connect = (cb) => {
+export const connect = (cb, username) => {
   console.log("connecting");
 
-  socket = new WebSocket("ws://localhost:8080/ws");
+  socket = new WebSocket(`ws://localhost:8080/ws?username=${username}`);
 
   socket.onopen = () => {
     console.log("connected");
