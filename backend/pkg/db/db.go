@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -12,12 +13,12 @@ import (
 var Collection *mongo.Collection
 var ctx = context.TODO()
 
-// Message matches the JSON we send and the BSON we store in Mongo
 type Message struct {
-	Type     string `json:"type" bson:"type"`
-	Username string `json:"username" bson:"username"`
-	Body     string `json:"body" bson:"body"`
-	Time     string `json:"time" bson:"time"`
+	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Type     string             `json:"type" bson:"type"`
+	Username string             `json:"username" bson:"username"`
+	Body     string             `json:"body" bson:"body"`
+	Time     string             `json:"time" bson:"time"`
 }
 
 func InitDB() {
@@ -36,16 +37,30 @@ func InitDB() {
 	Collection = client.Database("chat_app").Collection("messages")
 }
 
-// InsertMessage saves the message to Mongo
-func InsertMessage(msg Message) error {
-	_, err := Collection.InsertOne(ctx, msg)
+// 🚀 UPDATED: Returns the message with the generated ID
+func InsertMessage(msg Message) (Message, error) {
+	result, err := Collection.InsertOne(ctx, msg)
+	if err != nil {
+		return msg, err
+	}
+	// Inject the new ID into the struct before returning
+	if oID, ok := result.InsertedID.(primitive.ObjectID); ok {
+		msg.ID = oID
+	}
+	return msg, nil
+}
+
+func DeleteMessageByID(idStr string) error {
+	id, err := primitive.ObjectIDFromHex(idStr)
+	if err != nil {
+		return err
+	}
+	_, err = Collection.DeleteOne(ctx, map[string]interface{}{"_id": id})
 	return err
 }
 
 func GetHistory() ([]Message, error) {
 	var messages []Message
-
-	// We want to fetch messages. You can add .SetLimit(50) if the chat gets huge.
 	cursor, err := Collection.Find(ctx, map[string]interface{}{})
 	if err != nil {
 		return nil, err
@@ -55,7 +70,7 @@ func GetHistory() ([]Message, error) {
 	for cursor.Next(ctx) {
 		var msg Message
 		if err := cursor.Decode(&msg); err != nil {
-			return nil, err
+			continue
 		}
 		messages = append(messages, msg)
 	}
@@ -63,7 +78,6 @@ func GetHistory() ([]Message, error) {
 }
 
 func ClearAllMessages() error {
-	// Passing an empty filter {} tells Mongo to match (and delete) everything
 	_, err := Collection.DeleteMany(ctx, map[string]interface{}{})
 	return err
 }

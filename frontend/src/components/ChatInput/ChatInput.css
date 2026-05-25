@@ -4,33 +4,54 @@
   border-top: 2px solid #3c3836;
   display: flex;
   gap: 12px;
-  align-items: center;
+  align-items: flex-end; /* 🚀 Changed to 'flex-end' so button stays at the bottom as text grows */
   z-index: 10;
 }
 
-.ChatInput input {
+/* 🚀 Updated from 'input' to 'textarea' */
+.ChatInput textarea {
   flex: 1;
   padding: 12px 16px;
   background: #282828;
   border: 1px solid #504945;
   border-radius: 4px;
-  color: #ebdbb2; /* Cream text input color */
+  color: #ebdbb2; 
   font-size: 14px;
   outline: none;
   font-family: monospace;
+  resize: none; /* 🚀 Prevents user from dragging the corner and breaking layout */
+  min-height: 20px; /* Adjust based on your preference */
+  max-height: 200px; /* Limits how tall the box can get before scrolling */
+  line-height: 1.5;
+  overflow-y: auto;
 }
 
-.ChatInput input:focus {
-  border-color: #fabd2f; /* Yellow focus accent borders */
+.ChatInput textarea:focus {
+  border-color: #fabd2f; 
 }
 
-/* If your Input contains a send button, here's an aesthetic touchup */
+/* Scrollbar styling for the textarea (Gruvbox style) */
+.ChatInput textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ChatInput textarea::-webkit-scrollbar-thumb {
+  background: #504945;
+  border-radius: 10px;
+}
+
 .ChatInput button {
-  background: #fe8019; /* Orange action button */
+  background: #fe8019;
   color: #282828;
   border: none;
   padding: 12px 20px;
   border-radius: 4px;
   font-weight: bold;
   cursor: pointer;
+  height: 45px; /* Matches the initial height of the textarea */
+  transition: background 0.2s;
+}
+
+.ChatInput button:hover {
+  background: #fabd2f; /* Shifts to Yellow on hover */
 }

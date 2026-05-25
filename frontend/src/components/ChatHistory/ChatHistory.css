@@ -1,21 +1,18 @@
 .ChatHistoryContainer {
   display: flex;
   flex-direction: column;
-  /* 🚀 THE FIX: Force the container to be exactly the height of the screen 
-     minus the space for your Header and Input bar */
   height: calc(100vh - 120px); 
   background: transparent;
   position: relative;
 }
 
-/* Gruvbox Top Badge */
 .chatRoomBadge {
   align-self: center;
   margin: 14px 0;
   background: #3c3836;
-  color: #a89984; /* Soft Light Gray */
+  color: #a89984; 
   padding: 6px 14px;
-  border-radius: 4px; /* Blocky retro style looks cleaner with Gruvbox */
+  border-radius: 4px;
   font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
@@ -30,7 +27,7 @@
 .pulseIndicator {
   width: 6px;
   height: 6px;
-  background-color: #b8bb26; /* Gruvbox Bright Green indicator */
+  background-color: #b8bb26; 
   border-radius: 50%;
   display: inline-block;
   box-shadow: 0 0 6px #b8bb26;
@@ -42,7 +39,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  /* Keep this! It only works because the parent now has a fixed height */
   overflow-y: auto; 
 }
 
@@ -59,66 +55,93 @@
   justify-content: flex-end;
 }
 
-/* Master bubble layout adjustments */
 .messageBubble {
   padding: 10px 14px 22px 14px;
-  border-radius: 6px; /* Boxy aesthetic fits Gruvbox nicely */
+  border-radius: 6px;
   margin: 2px 0;
   width: fit-content;
-  min-width: 90px;
-  max-width: 65%;
+  min-width: 60px; /* Reduced for better small-message look */
+  max-width: 85%; /* Expanded to fit code blocks better */
   position: relative;
   word-wrap: break-word;
   border: 1px solid #504945;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  cursor: pointer;
 }
 
-/* 👥 LEFT SIDE: Other people's messages */
 .messageBubble.other {
-  background: #3c3836; /* Soft Dark Gray */
-  color: #ebdbb2; /* Classic Gruvbox Light Cream text */
+  background: #3c3836;
+  color: #ebdbb2;
 }
 
 .messageBubble.other .username {
   font-weight: bold;
-  color: #fabd2f; /* Bright Yellow accent for external names */
+  color: #fabd2f; 
   font-size: 12px;
   margin-bottom: 2px;
   display: block;
 }
 
-.messageBubble.other .body {
-  color: #ebdbb2;
-}
-
-.messageBubble.other .time {
-  color: #928374; /* Muted Material Gray */
-}
-
-/* 👤 RIGHT SIDE: Your own messages */
 .messageBubble.self {
-  background: #8ec07c; /* Warm Gruvbox Aqua */
-  color: #282828; /* Crisp dark contrast text */
+  background: #8ec07c; 
+  color: #282828;
   border-color: #a89984;
 }
 
-.messageBubble.self .body {
-  color: #282828;
-  font-weight: 500;
-}
-
-.messageBubble.self .time {
-  color: #504945;
-}
-
-.messageTop {
+.delete-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fb4934;
+  color: #1d2021;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  z-index: 10;
+  animation: fadeIn 0.1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .body {
   font-size: 14px;
   line-height: 1.4;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* Preserves whitespace and line breaks */
+  word-break: break-word; /* Allows long words to break and prevent overflow */
+}
+
+/* 🚀 FIX: Prevents Markdown from adding document-style spacing */
+.body p {
+  margin: 0;
+  display: inline;
+  white-space: pre-wrap; /* Preserves whitespace and line breaks */
+}
+
+/* 🚀 Syntax block styling */
+.body pre {
+  display: block;
+  width: 100%;
+  margin: 10px 0 !important;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+code {
+  font-family: 'Courier New', Courier, monospace;
+  background: rgba(0,0,0,0.2);
+  padding: 2px 4px;
+  border-radius: 3px;
 }
 
 .time {
@@ -129,10 +152,9 @@
   font-family: monospace;
 }
 
-/* System notice text styling updates */
 .systemMessage {
   text-align: center;
-  color: #fe8019; /* High-visibility Gruvbox Orange */
+  color: #fe8019;
   background: #3c3836;
   padding: 4px 12px;
   font-size: 11px;

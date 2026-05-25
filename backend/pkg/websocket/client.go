@@ -2,10 +2,10 @@ package websocket
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Client struct {
@@ -15,10 +15,11 @@ type Client struct {
 }
 
 type Message struct {
-	Type     string `json:"type"`
-	Body     string `json:"body"`
-	Username string `json:"username,omitempty"`
-	Time     string `json:"time,omitempty"`
+	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Type     string             `json:"type" bson:"type"`
+	Body     string             `json:"body" bson:"body"`
+	Username string             `json:"username,omitempty" bson:"username"`
+	Time     string             `json:"time,omitempty" bson:"time"`
 }
 
 func (c *Client) Read() {
@@ -34,25 +35,15 @@ func (c *Client) Read() {
 			return
 		}
 
-		// 🚀 1. Create an empty message struct
 		var msg Message
-
-		// 🚀 2. Decode the JSON payload 'p' into our struct
 		if err := json.Unmarshal(p, &msg); err != nil {
-			fmt.Println("Error decoding JSON:", err)
-			// If it's not JSON, treat it as a plain body (fallback)
-			msg = Message{
-				Type: "chat",
-				Body: string(p),
-			}
+			msg = Message{Type: "chat", Body: string(p)}
 		}
 
-		// 🚀 3. Sync the client's username if it was sent in the message
 		if msg.Username != "" {
 			c.Username = msg.Username
 		}
 
 		c.Pool.Broadcast <- msg
-		fmt.Printf("Message Received: %+v\n", msg)
 	}
 }

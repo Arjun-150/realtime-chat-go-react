@@ -29,6 +29,7 @@ class App extends Component {
           try {
             const nestedData = JSON.parse(data.body);
             data = {
+              id: nestedData.id || data.id,
               type: nestedData.type || data.type,
               username: nestedData.username || data.username,
               body: nestedData.body,
@@ -39,13 +40,20 @@ class App extends Component {
           }
         }
 
+        // 🚀 LIVE DELETE RECEPTION: Catch delete signals from the pool
+        if (data.type === "delete") {
+          this.setState(prev => ({
+            chatHistory: prev.chatHistory.filter(m => m.id !== data.body)
+          }));
+          return;
+        }
+
         this.setState((prev) => ({
           chatHistory: [...prev.chatHistory, data]
         }));
       });
 
-      // 🚀 THE FIX: Send an immediate handshake to let Go know who this connection belongs to
-      // We wrap this in a tiny timeout to ensure the WebSocket readyState has transitioned to open
+      // Handshake to let Go connect usernames to pools
       setTimeout(() => {
         const joinPayload = {
           type: "system",
@@ -64,25 +72,25 @@ class App extends Component {
       type: "chat",
       username: this.state.username,
       body: text,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     sendMsg(JSON.stringify(payload));
   };
   
   clearChatLocally = () => {
-  this.setState({ chatHistory: [] });
-}
+    this.setState({ chatHistory: [] });
+  };
 
   render() {
     return (
       <div className="App">
-        {/* 🚀 PASS THE FUNCTION AS A PROP */}
         <Header onClear={this.clearChatLocally} />
         
         <ChatHistory 
           chatHistory={this.state.chatHistory} 
           currentUsername={this.state.username} 
+          sendMsg={sendMsg} /* 🚀 Passing WebSocket transmission function down */
         />
         <ChatInput send={this.send} />
       </div>

@@ -1,17 +1,28 @@
+import React, { Component } from "react";
 import "./ChatInput.css";
 
-function ChatInput({ send }) {
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      send(event.target.value);
-      event.target.value = "";
+class ChatInput extends Component {
+  handleKeyDown = (event) => {
+    // If Enter is pressed WITHOUT Shift, send the message
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); // Prevents a new line being added after sending
+      this.props.send(event.target.value);
+      event.target.value = ""; // Clear the box
     }
+    // If Shift + Enter is pressed, it naturally goes to a new line
   };
 
-  return (
-    <div className="ChatInput">
-      <input placeholder="Type a message..." onKeyDown={handleKeyDown} />
-    </div>
-  );
+  render() {
+    return (
+      <div className="ChatInput">
+        <textarea 
+          placeholder="Type a message... (Shift+Enter for new line)" 
+          onKeyDown={this.handleKeyDown} 
+          rows="1"
+        />
+      </div>
+    );
+  }
 }
+
 export default ChatInput;
