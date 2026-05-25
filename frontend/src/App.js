@@ -17,12 +17,14 @@ class App extends Component {
 
   componentDidMount() {
     const name = prompt("Enter your name");
+    const finalizedName = name || "Anonymous";
 
-    this.setState({ username: name || "Anonymous" }, () => {
+    this.setState({ username: finalizedName }, () => {
       connect((msg) => {
+        console.log("RAW MESSAGE FROM GO:", msg.data);
         let data = JSON.parse(msg.data);
 
-        // Fix the nested stringified JSON body from Go backend
+        // Fix nested stringified JSON body if present
         if (data.body && typeof data.body === "string" && data.body.trim().startsWith("{")) {
           try {
             const nestedData = JSON.parse(data.body);
@@ -41,6 +43,17 @@ class App extends Component {
           chatHistory: [...prev.chatHistory, data]
         }));
       });
+
+      // 🚀 THE FIX: Send an immediate handshake to let Go know who this connection belongs to
+      // We wrap this in a tiny timeout to ensure the WebSocket readyState has transitioned to open
+      setTimeout(() => {
+        const joinPayload = {
+          type: "system",
+          username: finalizedName,
+          body: "joined"
+        };
+        sendMsg(JSON.stringify(joinPayload));
+      }, 300);
     });
   }
 
@@ -56,12 +69,21 @@ class App extends Component {
 
     sendMsg(JSON.stringify(payload));
   };
+  
+  clearChatLocally = () => {
+  this.setState({ chatHistory: [] });
+}
 
   render() {
     return (
       <div className="App">
-        <Header />
-        <ChatHistory chatHistory={this.state.chatHistory} />
+        {/* 🚀 PASS THE FUNCTION AS A PROP */}
+        <Header onClear={this.clearChatLocally} />
+        
+        <ChatHistory 
+          chatHistory={this.state.chatHistory} 
+          currentUsername={this.state.username} 
+        />
         <ChatInput send={this.send} />
       </div>
     );

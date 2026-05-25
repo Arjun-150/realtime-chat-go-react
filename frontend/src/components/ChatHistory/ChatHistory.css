@@ -1,53 +1,143 @@
-.ChatHistory {
-  padding: 10px;
+.ChatHistoryContainer {
   display: flex;
   flex-direction: column;
-}
-
-.messageBubble {
-  background: white;
-  padding: 10px;
-  border-radius: 12px;
-  margin: 8px 0;
-  width: fit-content;
-  max-width: 60%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  /* 🚀 THE FIX: Force the container to be exactly the height of the screen 
+     minus the space for your Header and Input bar */
+  height: calc(100vh - 120px); 
+  background: transparent;
   position: relative;
 }
 
-.messageText {
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-}
-
-.username {
+/* Gruvbox Top Badge */
+.chatRoomBadge {
+  align-self: center;
+  margin: 14px 0;
+  background: #3c3836;
+  color: #a89984; /* Soft Light Gray */
+  padding: 6px 14px;
+  border-radius: 4px; /* Blocky retro style looks cleaner with Gruvbox */
+  font-size: 11px;
   font-weight: bold;
-  color: #2a7fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #504945;
+  z-index: 2;
 }
 
-.body {
-  font-size: 15px;
-  color: #222;
+.pulseIndicator {
+  width: 6px;
+  height: 6px;
+  background-color: #b8bb26; /* Gruvbox Bright Green indicator */
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 6px #b8bb26;
 }
 
-.time {
-  font-size: 10px;
-  color: gray;
-  position: absolute;
-  bottom: 4px;
-  right: 8px;
+.ChatHistoryStream {
+  flex: 1;
+  padding: 0 24px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Keep this! It only works because the parent now has a fixed height */
+  overflow-y: auto; 
 }
 
-.systemText {
-  text-align: center;
-  color: gray;
+.messageRow {
+  display: flex;
+  width: 100%;
+}
+
+.otherRow {
+  justify-content: flex-start;
+}
+
+.selfRow {
+  justify-content: flex-end;
+}
+
+/* Master bubble layout adjustments */
+.messageBubble {
+  padding: 10px 14px 22px 14px;
+  border-radius: 6px; /* Boxy aesthetic fits Gruvbox nicely */
+  margin: 2px 0;
+  width: fit-content;
+  min-width: 90px;
+  max-width: 65%;
+  position: relative;
+  word-wrap: break-word;
+  border: 1px solid #504945;
+}
+
+/* 👥 LEFT SIDE: Other people's messages */
+.messageBubble.other {
+  background: #3c3836; /* Soft Dark Gray */
+  color: #ebdbb2; /* Classic Gruvbox Light Cream text */
+}
+
+.messageBubble.other .username {
+  font-weight: bold;
+  color: #fabd2f; /* Bright Yellow accent for external names */
   font-size: 12px;
-  margin: 10px 0;
+  margin-bottom: 2px;
+  display: block;
+}
+
+.messageBubble.other .body {
+  color: #ebdbb2;
+}
+
+.messageBubble.other .time {
+  color: #928374; /* Muted Material Gray */
+}
+
+/* 👤 RIGHT SIDE: Your own messages */
+.messageBubble.self {
+  background: #8ec07c; /* Warm Gruvbox Aqua */
+  color: #282828; /* Crisp dark contrast text */
+  border-color: #a89984;
+}
+
+.messageBubble.self .body {
+  color: #282828;
+  font-weight: 500;
+}
+
+.messageBubble.self .time {
+  color: #504945;
 }
 
 .messageTop {
   display: flex;
-  gap: 6px;
-  align-items: center;
+  flex-direction: column;
+}
+
+.body {
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+}
+
+.time {
+  font-size: 9px;
+  position: absolute;
+  bottom: 4px;
+  right: 10px;
+  font-family: monospace;
+}
+
+/* System notice text styling updates */
+.systemMessage {
+  text-align: center;
+  color: #fe8019; /* High-visibility Gruvbox Orange */
+  background: #3c3836;
+  padding: 4px 12px;
+  font-size: 11px;
+  margin: 10px 0;
+  align-self: center;
+  border-radius: 4px;
+  border: 1px solid #504945;
 }

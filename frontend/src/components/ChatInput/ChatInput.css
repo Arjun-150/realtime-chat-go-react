@@ -1,13 +1,36 @@
 .ChatInput {
-  width: 95%;
-  margin: auto;
-  display: block;
+  padding: 16px 24px;
+  background: #1d2021;
+  border-top: 2px solid #3c3836;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 10;
 }
 
 .ChatInput input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  flex: 1;
+  padding: 12px 16px;
+  background: #282828;
+  border: 1px solid #504945;
+  border-radius: 4px;
+  color: #ebdbb2; /* Cream text input color */
+  font-size: 14px;
+  outline: none;
+  font-family: monospace;
+}
+
+.ChatInput input:focus {
+  border-color: #fabd2f; /* Yellow focus accent borders */
+}
+
+/* If your Input contains a send button, here's an aesthetic touchup */
+.ChatInput button {
+  background: #fe8019; /* Orange action button */
+  color: #282828;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
 }

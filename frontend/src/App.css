@@ -1,5 +1,19 @@
 .App {
-  text-align: center;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background-color: #282828; /* Gruvbox Dark Background default */
+  
+  /* Retains image capabilities but applies a warm Gruvbox vintage overlay color */
+  background-image: linear-gradient(rgba(40, 40, 40, 0.85), rgba(40, 40, 40, 0.9)), url('./components/ChatHistory/chatbg.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: 'Courier New', Courier, monospace; /* Optional: adds a neat retro terminal font vibe */
 }
 
 .App-logo {
